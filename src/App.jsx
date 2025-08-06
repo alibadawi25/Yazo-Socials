@@ -1,17 +1,47 @@
+import React from "react";
 import { useState } from "react";
 import TextPressure from "./components/TextPressure";
 import BlurText from "./components/BlurText";
 import CircularGallery from "./components/CircularGallery";
+import InstaButton from "./components/InstagramButton";
+import TiktokButton from "./components/TiktokButton";
 import "./App.css";
 
 function App() {
+  const [isWide, setIsWide] = useState(window.innerWidth > 768);
+
+  // Update isWide on window resize
+  React.useEffect(() => {
+    const handleResize = () => setIsWide(window.innerWidth > 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div className="App">
+      <TextPressure
+        text="Yazo"
+        className="text-pressure"
+        weight={isWide ? true : false}
+      />
       <BlurText text="Follow Us On" className="blur-text"></BlurText>
-      <TextPressure text="Yazo" className="text-pressure" />
+      <div className="social-buttons">
+        <InstaButton
+          onClick={() =>
+            window.open("https://www.instagram.com/yazo.eg", "_blank")
+          }
+        />
+        <TiktokButton
+          onClick={() =>
+            window.open("https://www.tiktok.com/@yazo.eg", "_blank")
+          }
+        />
+      </div>
       <div className="circular-gallery-container">
         <CircularGallery
           borderRadius={0.1}
+          // bend is 0 if screen is narrow and 1 if wide
+          bend={isWide ? 2 : 0}
           textColor="#7f1517"
           items={[
             {
