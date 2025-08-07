@@ -40,19 +40,38 @@ function createTextTexture(
 ) {
   const canvas = document.createElement("canvas");
   const context = canvas.getContext("2d");
+
+  // High-quality text rendering settings
+  context.imageSmoothingEnabled = true;
+  context.imageSmoothingQuality = "high";
+  context.textRenderingOptimization = "optimizeQuality";
+
   context.font = font;
   const metrics = context.measureText(text);
   const textWidth = Math.ceil(metrics.width);
   const textHeight = Math.ceil(parseInt(font, 10) * 1.2);
   canvas.width = textWidth + 20;
   canvas.height = textHeight + 20;
+
+  // Re-apply settings after canvas resize
+  context.imageSmoothingEnabled = true;
+  context.imageSmoothingQuality = "high";
+  context.textRenderingOptimization = "optimizeQuality";
+
   context.font = font;
   context.fillStyle = color;
   context.textBaseline = "middle";
   context.textAlign = "center";
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.fillText(text, canvas.width / 2, canvas.height / 2);
-  const texture = new Texture(gl, { generateMipmaps: false });
+
+  const texture = new Texture(gl, {
+    generateMipmaps: false,
+    minFilter: gl.LINEAR,
+    magFilter: gl.LINEAR,
+    wrapS: gl.CLAMP_TO_EDGE,
+    wrapT: gl.CLAMP_TO_EDGE,
+  });
   texture.image = canvas;
   return { texture, width: canvas.width, height: canvas.height };
 }
@@ -156,7 +175,13 @@ class Media {
     this.onResize();
   }
   createShader() {
-    const texture = new Texture(this.gl, { generateMipmaps: false });
+    const texture = new Texture(this.gl, {
+      generateMipmaps: false,
+      minFilter: this.gl.LINEAR,
+      magFilter: this.gl.LINEAR,
+      wrapS: this.gl.CLAMP_TO_EDGE,
+      wrapT: this.gl.CLAMP_TO_EDGE,
+    });
     this.program = new Program(this.gl, {
       depthTest: false,
       depthWrite: false,
@@ -222,7 +247,17 @@ class Media {
     img.crossOrigin = "anonymous";
     img.src = this.image;
     img.onload = () => {
-      texture.image = img;
+      // Enable image smoothing for better quality
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(img, 0, 0);
+
+      texture.image = canvas;
       this.program.uniforms.uImageSizes.value = [
         img.naturalWidth,
         img.naturalHeight,
@@ -342,9 +377,19 @@ class App {
     this.addEventListeners();
   }
   createRenderer() {
-    this.renderer = new Renderer({ alpha: true });
+    this.renderer = new Renderer({
+      alpha: true,
+      antialias: true,
+      powerPreference: "high-performance",
+    });
     this.gl = this.renderer.gl;
     this.gl.clearColor(0, 0, 0, 0);
+
+    // Enable anti-aliasing if available
+    if (this.gl.getExtension("WEBGL_multisampled_render_to_texture")) {
+      this.gl.hint(this.gl.GENERATE_MIPMAP_HINT, this.gl.NICEST);
+    }
+
     this.container.appendChild(this.gl.canvas);
   }
   createCamera() {
