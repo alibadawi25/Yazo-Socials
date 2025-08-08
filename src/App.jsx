@@ -95,14 +95,14 @@ function App() {
           <BlurText
             text="Yazo"
             className="shop-now yazo-text"
-            delay={150}
+            delay={100}
             threshold={0.3}
           />
         </a>
         <BlurText
           text="now!"
           className="shop-now"
-          delay={200}
+          delay={100}
           threshold={0.3}
         />
       </div>
