@@ -9,10 +9,14 @@ import "./App.css";
 
 function App() {
   const [isWide, setIsWide] = useState(window.innerWidth > 768);
+  const [isVerySmall, setIsVerySmall] = useState(window.innerWidth <= 480);
 
-  // Update isWide on window resize
+  // Update screen size states on window resize
   React.useEffect(() => {
-    const handleResize = () => setIsWide(window.innerWidth > 768);
+    const handleResize = () => {
+      setIsWide(window.innerWidth > 768);
+      setIsVerySmall(window.innerWidth <= 480);
+    };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -44,6 +48,8 @@ function App() {
           // bend is 0 if screen is narrow and 1 if wide
           bend={isWide ? 2 : 0}
           textColor="#7f1517"
+          autoplay={isVerySmall}
+          autoplaySpeed={1}
           items={[
             {
               image: "https://i.postimg.cc/N0v2GFJv/Polka-dot-Pants.jpg",

@@ -360,11 +360,17 @@ class App {
       font = "bold 40px Figtree",
       scrollSpeed = 2,
       scrollEase = 0.05,
+      autoplay = false,
+      autoplaySpeed = 3000,
     } = {}
   ) {
     document.documentElement.classList.remove("no-js");
     this.container = container;
     this.scrollSpeed = scrollSpeed;
+    this.autoplay = autoplay;
+    this.autoplaySpeed = autoplaySpeed;
+    this.autoplayInterval = null;
+    this.isHovered = false;
     this.scroll = { ease: scrollEase, current: 0, target: 0, last: 0 };
     this.onCheckDebounce = debounce(this.onCheck, 200);
     this.createRenderer();
@@ -375,6 +381,25 @@ class App {
     this.createMedias(items, bend, textColor, borderRadius, font);
     this.update();
     this.addEventListeners();
+    this.startAutoplay();
+  }
+
+  startAutoplay() {
+    if (this.autoplay) {
+      this.autoplayInterval = setInterval(() => {
+        if (!this.isHovered && !this.isDown) {
+          // Smooth continuous scrolling - small increments
+          this.scroll.target += 0.04; // Small smooth movement
+        }
+      }, 16); // ~60fps for smooth animation
+    }
+  }
+
+  stopAutoplay() {
+    if (this.autoplayInterval) {
+      clearInterval(this.autoplayInterval);
+      this.autoplayInterval = null;
+    }
   }
   createRenderer() {
     this.renderer = new Renderer({
@@ -493,6 +518,12 @@ class App {
     this.isDown = false;
     this.onCheck();
   }
+  onMouseEnter() {
+    this.isHovered = true;
+  }
+  onMouseLeave() {
+    this.isHovered = false;
+  }
   onWheel(e) {
     const delta = e.deltaY || e.wheelDelta || e.detail;
     this.scroll.target +=
@@ -545,6 +576,9 @@ class App {
     this.boundOnTouchDown = this.onTouchDown.bind(this);
     this.boundOnTouchMove = this.onTouchMove.bind(this);
     this.boundOnTouchUp = this.onTouchUp.bind(this);
+    this.boundOnMouseEnter = this.onMouseEnter.bind(this);
+    this.boundOnMouseLeave = this.onMouseLeave.bind(this);
+
     window.addEventListener("resize", this.boundOnResize);
     window.addEventListener("mousewheel", this.boundOnWheel);
     window.addEventListener("wheel", this.boundOnWheel);
@@ -554,9 +588,14 @@ class App {
     window.addEventListener("touchstart", this.boundOnTouchDown);
     window.addEventListener("touchmove", this.boundOnTouchMove);
     window.addEventListener("touchend", this.boundOnTouchUp);
+
+    // Add hover listeners to container
+    this.container.addEventListener("mouseenter", this.boundOnMouseEnter);
+    this.container.addEventListener("mouseleave", this.boundOnMouseLeave);
   }
   destroy() {
     window.cancelAnimationFrame(this.raf);
+    this.stopAutoplay();
     window.removeEventListener("resize", this.boundOnResize);
     window.removeEventListener("mousewheel", this.boundOnWheel);
     window.removeEventListener("wheel", this.boundOnWheel);
@@ -566,6 +605,13 @@ class App {
     window.removeEventListener("touchstart", this.boundOnTouchDown);
     window.removeEventListener("touchmove", this.boundOnTouchMove);
     window.removeEventListener("touchend", this.boundOnTouchUp);
+
+    // Remove hover listeners
+    if (this.container) {
+      this.container.removeEventListener("mouseenter", this.boundOnMouseEnter);
+      this.container.removeEventListener("mouseleave", this.boundOnMouseLeave);
+    }
+
     if (
       this.renderer &&
       this.renderer.gl &&
@@ -584,6 +630,8 @@ export default function CircularGallery({
   font = "bold 40px Figtree",
   scrollSpeed = 2,
   scrollEase = 0.05,
+  autoplay = false,
+  autoplaySpeed = 3000,
 }) {
   const containerRef = useRef(null);
   useEffect(() => {
@@ -595,10 +643,22 @@ export default function CircularGallery({
       font,
       scrollSpeed,
       scrollEase,
+      autoplay,
+      autoplaySpeed,
     });
     return () => {
       app.destroy();
     };
-  }, [items, bend, textColor, borderRadius, font, scrollSpeed, scrollEase]);
+  }, [
+    items,
+    bend,
+    textColor,
+    borderRadius,
+    font,
+    scrollSpeed,
+    scrollEase,
+    autoplay,
+    autoplaySpeed,
+  ]);
   return <div className="circular-gallery" ref={containerRef} />;
 }
