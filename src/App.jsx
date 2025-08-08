@@ -37,6 +37,7 @@ function App() {
           }
         />
       </div>
+
       <div className="circular-gallery-container">
         <CircularGallery
           borderRadius={0.1}

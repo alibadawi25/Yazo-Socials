@@ -55,6 +55,10 @@
     font-size: 2rem !important;
     font-weight: 900 !important;
   }
+
+  .circular-gallery-container {
+    height: 500px;
+  }
 }
 
 @keyframes fadeIn {
