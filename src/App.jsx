@@ -79,10 +79,33 @@ function App() {
           className="circular-gallery"
         />
       </div>
-      <h1 className="shop-now">
-        You can shop at <a href="https://yazo-official.netlify.app/">Yazo</a>{" "}
-        now!
-      </h1>
+      <div className="shop-now-container">
+        <BlurText
+          text="You can shop at"
+          className="shop-now"
+          delay={100}
+          threshold={0.3}
+        />
+        <a
+          href="https://yazo-official.netlify.app/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="yazo-link"
+        >
+          <BlurText
+            text="Yazo"
+            className="shop-now yazo-text"
+            delay={150}
+            threshold={0.3}
+          />
+        </a>
+        <BlurText
+          text="now!"
+          className="shop-now"
+          delay={200}
+          threshold={0.3}
+        />
+      </div>
     </div>
   );
 }

@@ -3,7 +3,11 @@
   flex-direction: column;
   align-items: center;
   min-height: 100%;
-  padding: 1rem;
+  padding: 2rem;
+}
+
+.App p {
+  margin: 0;
 }
 
 .blur-text {
@@ -19,6 +23,41 @@
 .shop-now {
   font-size: 4rem;
   text-align: center;
+  margin-top: 3rem;
+  transition: transform 0.3s ease;
+}
+
+.shop-now-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.yazo-link {
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+.yazo-link:hover {
+  transform: scale(1.1);
+}
+
+.yazo-text {
+  color: #2c5234 !important;
+  font-weight: 500;
+  padding-inline: 0.5rem;
+  transition: color 0.3s ease, padding-inline 0.5s ease;
+}
+
+.yazo-text:hover {
+  color: #1f3d26 !important;
+  padding-inline: 1rem;
+}
+
+.yazo-text:hover {
+  transform: scale(1.05);
 }
 .text-pressure {
   opacity: 0;
@@ -74,6 +113,16 @@
 
   .shop-now {
     font-size: 2rem;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .shop-now {
+    font-size: 1.5rem;
+    font-weight: 500;
     text-align: center;
     margin-top: 2rem;
   }
