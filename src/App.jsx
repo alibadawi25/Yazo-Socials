@@ -79,6 +79,10 @@ function App() {
           className="circular-gallery"
         />
       </div>
+      <h1 className="shop-now">
+        You can shop at <a href="https://yazo-official.netlify.app/">Yazo</a>{" "}
+        now!
+      </h1>
     </div>
   );
 }

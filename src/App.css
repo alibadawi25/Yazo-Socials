@@ -16,6 +16,10 @@
   margin: 0 !important;
 }
 
+.shop-now {
+  font-size: 4rem;
+  text-align: center;
+}
 .text-pressure {
   opacity: 0;
   font-size: 4rem;
@@ -50,6 +54,14 @@
   padding: 0;
 }
 
+@media (max-width: 1024px) {
+  .shop-now {
+    font-size: 3rem;
+    text-align: center;
+    margin-top: 2rem;
+  }
+}
+
 @media (max-width: 768px) {
   .text-pressure h1 {
     font-size: 2rem !important;
@@ -58,6 +70,12 @@
 
   .circular-gallery-container {
     height: 500px;
+  }
+
+  .shop-now {
+    font-size: 2rem;
+    text-align: center;
+    margin-top: 2rem;
   }
 }
 
